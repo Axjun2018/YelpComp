@@ -1,0 +1,16 @@
+<!--success and error comes from req.locals.success/error-->
+
+<% if(success && success.length) { %>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <!--use console.dir(success) to find； success is an array-->
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% } %>
+
+<% if(error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>

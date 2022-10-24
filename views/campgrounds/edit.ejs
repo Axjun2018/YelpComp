@@ -1,0 +1,55 @@
+<% layout('layouts/boilerplate') %>
+<h1 class="text-center">Edit Campground</h1>
+<div class="row">
+    <div class="col-6 offset-3">
+        <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" name="campground[title]" id="title" value="<%=campground.title%>" required>
+                <!-- The name save any campground at that title from campground array-->
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" name="campground[location]" id="location" value="<%=campground.location%>" required>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <!--image uploading & deleting in client-side -->
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload Images</label>
+                <input class="form-control" type="file" id="image" name="image" multiple>
+            </div>
+            <div class="mb-3">
+                <!--display stored img dynamicly, and give option to delete dynamicly-->
+                <% campground.images.forEach((img, i) => {%>
+                    <img src="<%=img.thumbnail%>" class="img-thumbnail" alt="">
+                    <div class="form-check-inline">
+                        <!--value is used to delete image in server side, it's checkbox's value;
+                        deleteImages[] is the same name with schemas.js: deleteImages: Joi.array()-->
+                        <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>"/>
+                    </div>
+                    <label for="image-<%=i%>">Delete?</label>
+                <%})%>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Campground Price</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="price">$</span>
+                    <input type="text" class="form-control" name="campground[price]" id="price" value="<%=campground.price%>" placeholder="0.00" aria-label="price" aria-describedby="price" required>
+                    <div class="valid-feedback">Looks good!</div>
+
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <!--textarear doesn't like input that uses value="content"-->
+                <textarea class="form-control" type="text" name="campground[description]" id="description" required><%=campground.description%></textarea>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-info">Update Campground</button>
+            </div>
+        </form>
+        <a href="/campgrounds/<%=campground._id%>">Back to Campgrounds</a>
+    </div>
+</div>
