@@ -1,5 +1,6 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/stars.css">
+
 <div class="row">
 
   <!--Campground info-->
@@ -10,7 +11,7 @@
           <% campground.images.forEach((img, i) => {%>
             <!--set first img in array active-->
             <div class="carousel-item <%=i === 0 ? 'active':'' %>">
-              <img src="<%=img.url%>" class="d-block w-100" alt="<%=campground.title%>">
+              <img src="<%=img.url%>" class="d-block w-100" alt="<%=campground.title%>" crossorigin>
             </div>
           <% })%>
         </div>
@@ -60,6 +61,7 @@
 
     <!--Write review area-->
     <div class="col-6">
+      <div id='map'></div>
       <!--Hide writing review for unlogin user, if currentUser: means the user is logged in-->
       <% if(currentUser) { %>
       <h2 class="p-3">Leave a Review</h2>
@@ -114,3 +116,15 @@
       <% } %>
     </div>
 </div>
+
+<!--pass the variable through script by ejs to the file at the bottom-->
+<script> 
+  //ejs required code
+  const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+  const campground = <%-JSON.stringify(campground)%>; //this campground is from model, we have to parse campground model to json data
+</script>
+
+<!--Pass to browser required code-->
+<!--the included script file is not run on ejs, it's run on browser. So inside this file below can't use ejs operator-->
+<!--subdir of public folder we can directly refer-->
+<script src="/js/showPageMap.js"></script> 

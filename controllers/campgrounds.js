@@ -7,6 +7,9 @@
 //include js model file from another dir
 const Campground = require("../models/campground"); 
 const { cloudinary } = require('../cloudinary');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding'); //include mapbox
+const mapboxToken = process.env.MAPBOX_TOKEN; //include token from env file
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 /**
  * Show campgrounds list
@@ -31,12 +34,25 @@ module.exports.renderNewForm = (req, res) => {
     res.render('campgrounds/new');
 }
 module.exports.createCampground = async (req, res, next) => {
+    const geodata = await geocoder.forwardGeocode({
+        //convert location input in create new camp to a set including longitude, latitude data
+        query: req.body.campground.location, //example-- query: 'Yosemite, CA',
+        limit: 1
+    }).send();
+    // print geodata and take a look which parts we need:
+    //console.log(geodata);
+    //console.log(geodata.body.features);
+    //console.log(geodata.body.features[0].geometry.coordinates); //[ longitude, latitude ]: [ -119.571615,  37.737363 ]
+    //res.send(geodata.body.features[0].geometry); //response example: {"type":"Point","coordinates":[108.467,30.9]}
+    
     //by default, req.body is empty, after submit form, the /campgrounds page is empty, need parse it: app.use(express.urlencoded({extended: true}))
     //res.send(req.body);
     // Add this line to avoid POST error request actually happen in database: when use Postman or website has been Hacked, not the url request
     //if the POST request doesn't send required campground fields, throw error 400-incomplete data, no new campgound will be add
     //if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400); // basic validator without using Joi
     const campground = new Campground(req.body.campground);
+    campground.geometry = geodata.body.features[0].geometry; //get geometry data
+
     //Save uploads to database: .images from campgrounds schema, is assigned to request.files components
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename}));
     campground.author = req.user._id; // assign user's id from request to author: add author(witch == user._id) to database

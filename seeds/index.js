@@ -23,26 +23,34 @@ const seedDB = async () => {
     await Review.deleteMany({});
     //const c = new Campground({ title: 'purple field' })
     //await c.save()
-    for (let i = 0; i < 50; i++) {  // randomly insert 50 campgrounds among 1000 instances
+    for (let i = 0; i < 200; i++) {  // randomly insert 50 campgrounds among 1000 instances
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
         const camp = new Campground({
+            //author is YOUR USER ID
             author: '6350b0727e57f69aaf76d33f', //insert all campground, the owner is user2
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             //image: 'https://source.unsplash.com/collection/483251', //give random camp pics by this url (must be valid url, includes https://)
             images: [
                 {
-                        url:'https://res.cloudinary.com/dbu69dh96/image/upload/v1666392475/YelpCamp/c8zjyjc8wolamuqfwymh.jpg',
-                        filename: 'YelpCamp/c8zjyjc8wolamuqfwymh'
+                    url:'https://res.cloudinary.com/dbu69dh96/image/upload/v1666385026/cld-sample-2.jpg',
+                    filename: 'YelpCamp/c8zjyjc8wolamuqfwymh'
                 },
                 {
-                    url:'https://res.cloudinary.com/dbu69dh96/image/upload/v1666392476/YelpCamp/tczv6dqe0iws0qbandhq.jpg',
+                    url:'https://res.cloudinary.com/dbu69dh96/image/upload/v1666384998/sample.jpg',
                     filename: 'YelpCamp/tczv6dqe0iws0qbandhq'
                 }
             ],
             description: 'Providing opportunities for leadership development, spiritual and personal growth, environmental stewardship, lifelong personal connections, fun and adventure.',
-            price
+            price,
+            geometry: {
+                type: "Point",
+                coordinates: [ 
+                    cities[random1000].longitude, 
+                    cities[random1000].latitude
+                ]
+            }
         })
         await camp.save();
     }

@@ -5,7 +5,10 @@
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading"><%= err.message%></h4>
             <!--err.stack show detail errors-->
-            <p class="text-break"><%= err.stack %></p>
+            <% if (process.env.NODE_ENV !== "production") { %>
+                <!--err.stack is the details of the error-->
+                <p class="text-break"><%= err.stack %></p>
+            <% } %>
         </div>
     </div>
 </div>
